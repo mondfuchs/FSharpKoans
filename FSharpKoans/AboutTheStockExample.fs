@@ -27,10 +27,7 @@ open FSharpKoans.Core
 //---------------------------------------------------------------
 [<Koan(Sort = 15)>]
 module ``about the stock example`` =
-        
-    let splitCommas (x:string) =
-        x.Split([|','|])
-        
+               
     let stockData =
         [ "Date,Open,High,Low,Close,Volume,Adj Close";
           "2012-03-30,32.40,32.41,32.04,32.26,31749400,32.26";
@@ -62,13 +59,17 @@ module ``about the stock example`` =
     // tests for yourself along the way. You can also try 
     // using the F# Interactive window to check your progress.
 
-    // get index
+    // split Commas
+    let splitCommas (x:string) =
+        x.Split([|','|])
+    
+    // get the index
     let column name data =
         data
         |> List.head
         |> Array.findIndex (fun x -> x = name) 
 
-    let findGreatestDifference sData =
+    let findDifference sData =
         let data = sData |> List.map splitCommas
         let opening = data |> column "Open" 
         let closing = data |> column "Close" 
@@ -81,6 +82,6 @@ module ``about the stock example`` =
 
     [<Koan>]
     let YouGotTheAnswerCorrect() =
-        let result =  findGreatestDifference stockData
+        let result =  findDifference stockData
         
         AssertEquality "2012-03-13" result
