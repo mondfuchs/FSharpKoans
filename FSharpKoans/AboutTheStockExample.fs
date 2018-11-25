@@ -64,24 +64,23 @@ module ``about the stock example`` =
         x.Split([|','|])
     
     // get the index
-    let column name data =
+    let getColumnIndexOf name data =
         data
         |> List.head
         |> Array.findIndex (fun x -> x = name) 
-
-    let findDifference sData =
-        let data = sData |> List.map splitCommas
-        let opening = data |> column "Open" 
-        let closing = data |> column "Close" 
-        let datetime = data |> column "Date"
-        data 
-        |> List.tail
-        |> List.maxBy (fun array -> abs (System.Double.Parse(array.[opening]) - System.Double.Parse(array.[closing])))
-        |> (fun x -> x.[datetime])
-      
-
+    
+    let calcDiff opening closing line=
+        abs((System.Double.Parse(Array.get line opening)) - (System.Double.Parse(Array.get line closing)))
+       
     [<Koan>]
     let YouGotTheAnswerCorrect() =
-        let result =  findDifference stockData
+        let data = stockData |> List.map splitCommas
+        let opening = data |> getColumnIndexOf "Open" 
+        let closing = data |> getColumnIndexOf "Close"
+        let datetime = data |> getColumnIndexOf "Date"
+        let result =  data 
+                        |> List.tail
+                        |> List.maxBy (fun line -> line |> calcDiff opening closing)
+                        |> (fun x -> Array.get x datetime)
         
         AssertEquality "2012-03-13" result
